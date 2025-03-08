@@ -1,0 +1,62 @@
+body {
+  background-color: #f8f9fa;
+}
+
+/* Sidebar */
+.sidebar {
+  background-color: #ffffff;
+  padding: 20px;
+  border-right: 1px solid #ddd;
+  min-height: 100vh;
+}
+
+/* Tarjetas de reseñas */
+.review-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin: 10px;
+  min-width: 280px;
+  max-width: 320px;
+  flex: 0 0 auto;
+}
+
+/* Contenedor de reseñas */
+.reviews-container {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 10px;
+}
+
+/* Estilo para imágenes de avatar */
+.avatar {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+}
+
+/* Contenedor de estrellas */
+.stars {
+  color: #fbc02d;
+}
+
+/* Botón flotante */
+.floating-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: white;
+  border: none;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.floating-btn-left {
+  left: 5px;
+}
+
+.floating-btn-right {
+  right: 5px;
+}
