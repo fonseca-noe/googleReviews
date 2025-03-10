@@ -1,62 +1,70 @@
 body {
-  background-color: #f8f9fa;
+  height: 100vh;
+  overflow: hidden;
 }
-
-/* Sidebar */
 .sidebar {
-  background-color: #ffffff;
+  height: 100vh;
+  background: #222;
+  color: white;
   padding: 20px;
-  border-right: 1px solid #ddd;
-  min-height: 100vh;
+  overflow-y: auto;
 }
-
-/* Tarjetas de reseñas */
-.review-card {
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 15px;
-  margin: 10px;
-  min-width: 280px;
-  max-width: 320px;
-  flex: 0 0 auto;
-}
-
-/* Contenedor de reseñas */
-.reviews-container {
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding: 10px;
-}
-
-/* Estilo para imágenes de avatar */
 .avatar {
-  border-radius: 50%;
   width: 50px;
   height: 50px;
+  border-radius: 50%;
 }
-
-/* Contenedor de estrellas */
 .stars {
   color: #fbc02d;
 }
 
-/* Botón flotante */
-.floating-btn {
+.carousel-inner {
+  display: flex;
+  overflow: hidden;
+}
+.carousel-item {
+  width: 100%; 
+}
+.review-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  min-height: 180px;
+  width: 30%; 
+}
+
+.custom-carousel-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: white;
+  background: rgba(0, 0, 0, 0.5); 
+  color: white; 
   border: none;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: background 0.3s ease;
 }
 
-.floating-btn-left {
-  left: 5px;
+.custom-carousel-btn:hover {
+  background: rgba(0, 0, 0, 0.8);
 }
 
-.floating-btn-right {
-  right: 5px;
+.carousel-control-prev {
+  left: 10px;
+}
+
+.carousel-control-next {
+  right: 10px;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    display: none;
 }

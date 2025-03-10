@@ -1,38 +1,34 @@
 document.getElementById("buscar").addEventListener("click", async () => {
-    const nombreNegocio = document.getElementById("nombre").value.trim();
-    const previewBox = document.getElementById("preview-box");
+    const criterioBusqueda = document.getElementById("nombre").value.trim();
     const opcionesNegocios = document.getElementById("opciones-negocios");
 
-    if (nombreNegocio === "") {
-        previewBox.innerHTML = "<p class='text-danger text-center'>Ingrese un nombre de negocio.</p>";
+    if (criterioBusqueda === "") {
+        document.getElementById("review-container").innerHTML = "<p class='text-danger text-center'>Ingrese un nombre o dirección de negocio.</p>";
         return;
     }
 
     try {
-        // Buscar negocios en Google Places API 
         const searchResponse = await fetch("google_places.php", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ tipo: "buscar", param: nombreNegocio })
+            body: JSON.stringify({ tipo: "buscar", param: criterioBusqueda })
         });
 
         const searchData = await searchResponse.json();
 
         if (!searchData.places || searchData.places.length === 0) {
-            previewBox.innerHTML = "<p class='text-danger text-center'>No se encontraron resultados.</p>";
+            document.getElementById("review-container").innerHTML = "<p class='text-danger text-center'>No se encontraron resultados.</p>";
             return;
         }
 
-        // Limpiar opciones previas
         opcionesNegocios.innerHTML = "";
 
-        // Si hay múltiples negocios, mostrar opciones en la barra lateral
         if (searchData.places.length > 1) {
+            opcionesNegocios.style.display = "block";
             let optionsHtml = "<h5 class='text-center'>Seleccione un negocio:</h5>";
             searchData.places.forEach(place => {
                 optionsHtml += `
-                    <button class="btn btn-outline-primary w-100 my-1 negocio-opcion" 
-                        data-id="${place.id}">
+                    <button class="btn btn-outline-primary w-100 my-1 negocio-opcion" data-id="${place.id}">
                         ${place.displayName.text} - ${place.formattedAddress}
                     </button>`;
             });
@@ -48,16 +44,14 @@ document.getElementById("buscar").addEventListener("click", async () => {
             obtenerReseñas(searchData.places[0].id);
         }
     } catch (error) {
-        previewBox.innerHTML = `<p class='text-danger text-center'>Error al buscar negocios.</p>`;
+        document.getElementById("review-container").innerHTML = `<p class='text-danger text-center'>Error al buscar negocios.</p>`;
         console.error(error);
     }
 });
 
-// Obtener y mostrar reseñas de un negocio
 async function obtenerReseñas(placeId) {
-    const previewBox = document.getElementById("preview-box");
-
     try {
+        const opcionesNegocios = document.getElementById("opciones-negocios");
         const detailsResponse = await fetch("google_places.php", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -65,53 +59,86 @@ async function obtenerReseñas(placeId) {
         });
 
         const detailsData = await detailsResponse.json();
-
+        console.log(detailsData);
         if (!detailsData.reviews || detailsData.reviews.length === 0) {
-            previewBox.innerHTML = "<p class='text-warning text-center'>No hay reseñas disponibles.</p>";
+            reviewContainer.innerHTML = "<p class='text-warning text-center'>No hay reseñas disponibles.</p>";
             return;
         }
+        
+        document.getElementById("business-title").textContent = detailsData.displayName.text;
+        document.getElementById("rating").textContent = detailsData.rating.toFixed(1);
+        document.getElementById("star-container").innerHTML = obtenerEstrellas(detailsData.rating);
 
-        let reviewsHtml = "";
 
-        detailsData.reviews.forEach(review => {
+        const reviewContainer = document.getElementById("review-container");
+        const carousel = document.getElementById("review-carousel");
+        const prevButton = document.querySelector(".carousel-control-prev");
+        const nextButton = document.querySelector(".carousel-control-next");
+
+        carousel.style.display = "none";
+        prevButton.style.display = "none";
+        nextButton.style.display = "none";
+        opcionesNegocios.style.display = "none";
+
+        let reviewsHtml = '<div class="carousel-item active"><div class="d-flex justify-content-center">';
+        detailsData.reviews.forEach((review, index) => {
             const avatar = review.authorAttribution.photoUri || "img/default-avatar.png";
             const estrellas = obtenerEstrellas(review.rating);
             const fecha = review.relativePublishTimeDescription;
             const fotoReseña = review.originalPhotoUri ? `<img src="${review.originalPhotoUri}" class="img-fluid mt-2 rounded" alt="Foto de la reseña">` : "";
 
             reviewsHtml += `
-                <div class="review-card p-3 border rounded shadow-sm mb-3">
+                <div class="review-card mx-2">
                     <div class="d-flex align-items-center mb-2">
-                        <img src="${avatar}" onerror="this.src='img/default-avatar.png';" 
-                            alt="Avatar" class="avatar me-2 rounded-circle" width="50" height="50">
+                        <img src="${avatar}" onerror="this.src='img/default-avatar.png';" class="avatar me-2 rounded-circle">
                         <div>
-                            <h6 class="mb-0">${review.authorAttribution.displayName}</h6>
+                            <h6>${review.authorAttribution.displayName}</h6>
                             <small class="text-muted">${fecha}</small>
                         </div>
                     </div>
                     <div class="stars mb-2">${estrellas}</div>
-                    <p class="mb-0">${review.text.text}</p>
-                    ${fotoReseña} <!-- Aquí se muestra la imagen si existe -->
-                </div>
-            `;
+                    <p class="mb-0">${review.text ? review.text.text : "Sin comentario."}</p>
+                    ${fotoReseña}
+                </div>`;
+
+            // Cada 3 reseñas, cierra la diapositiva y abre una nueva
+            if ((index + 1) % 3 === 0 && index + 1 !== detailsData.reviews.length) {
+                reviewsHtml += '</div></div><div class="carousel-item"><div class="d-flex justify-content-center">';
+            }
         });
 
-        previewBox.innerHTML = reviewsHtml;
+        reviewsHtml += '</div></div>'; 
+        reviewContainer.innerHTML = reviewsHtml;
+        carousel.style.display = "block";
+        if (detailsData.reviews.length > 3) {
+            prevButton.style.display = "block";
+            nextButton.style.display = "block";
+        }
     } catch (error) {
-        previewBox.innerHTML = `<p class='text-danger text-center'>Error al obtener reseñas.</p>`;
+        document.getElementById("review-container").innerHTML = `<p class='text-danger text-center'>Error al obtener reseñas.</p>`;
         console.error(error);
     }
 }
-
-// Función para convertir rating en estrellas HTML
 function obtenerEstrellas(rating) {
     let estrellas = "";
-    for (let i = 1; i <= 5; i++) {
-        if (i <= rating) {
-            estrellas += '<i class="fas fa-star"></i>';
-        } else {
-            estrellas += '<i class="far fa-star"></i>';
-        }
+    let fullStars = Math.floor(rating); // Estrellas completas
+    let halfStar = rating % 1 >= 0.5;   // Media estrella si el decimal es ≥ 0.5
+    let emptyStars = 5 - fullStars - (halfStar ? 1 : 0); // Estrellas vacías restantes
+
+    // Agregar estrellas completas
+    for (let i = 0; i < fullStars; i++) {
+        estrellas += '<i class="fas fa-star text-warning"></i>';
     }
+    
+    // Agregar media estrella si aplica
+    if (halfStar) {
+        estrellas += '<i class="fas fa-star-half-alt text-warning"></i>';
+    }
+
+    // Agregar estrellas vacías
+    for (let i = 0; i < emptyStars; i++) {
+        estrellas += '<i class="far fa-star text-warning"></i>';
+    }
+
     return estrellas;
 }
