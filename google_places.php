@@ -5,7 +5,7 @@ header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type");
 //TU_API_KEY
 // API Key de Google Places
-define("API_KEY", "AIzaSyAiFBHR0Dk7c93JLCT266HW7K_ePhMtnyM");
+define("API_KEY", "TU_API_KEY");
 
 $data = json_decode(file_get_contents("php://input"), true);
 $tipo = $data["tipo"] ?? "";
