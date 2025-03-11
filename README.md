@@ -34,6 +34,12 @@ Utiliza **PHP en el backend** y una interfaz moderna con **HTML, CSS, JavaScript
 2. Selecciona un resultado y verás su información detallada.  
 3. Explora las reseñas en el carrusel.  
 
+## 🖥️ Demo  
+
+Puedes probar el proyecto en el siguiente enlace:  
+
+🔗 [Ver Demo](https://37d3-38-172-129-255.ngrok-free.app/googleReviews/)  
+
 ## 📜 Licencia  
 
 Este proyecto está bajo la licencia **MIT**.  
