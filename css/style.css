@@ -1,4 +1,4 @@
-avatar {
+.avatar {
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -12,23 +12,47 @@ avatar {
   overflow: hidden;
 }
 .carousel-item {
-  width: 100%; 
+  width: 100%;
 }
 .review-card {
   background: #fff;
   border-radius: 10px;
   padding: 15px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  min-height: 180px;
-  width: 30%; 
+  min-height: 250px; /* Ajusta la altura si es necesario */
+  width: 30%;
+  overflow: hidden; /* Evita que el contenido se salga */
+  display: flex;
+  flex-direction: column;
+}
+
+.review-text {
+  flex-grow: 1;
+  overflow-y: auto;
+  max-height: 500px; /* Ajusta la altura máxima del texto */
+  padding-right: 5px;
+}
+
+/* Estilo para la barra de desplazamiento */
+.review-text::-webkit-scrollbar {
+  width: 5px;
+}
+
+.review-text::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+.review-text::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .custom-carousel-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.5); 
-  color: white; 
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
   border: none;
   border-radius: 50%;
   width: 50px;
@@ -55,47 +79,57 @@ avatar {
 
 .carousel-control-prev,
 .carousel-control-next {
-    display: none;
+  display: none;
 }
 
-
-/* Asegurar que toda la página tiene altura completa */
 html, body {
-  height: 100vh;
   margin: 0;
   padding: 0;
   background-color: #f8f9fa;
 }
 
-/* Contenedor principal */
-.container {
-  height: 100vh;
-  padding: 20px;
+.container-fluid {
+  padding: 20px 40px; /* Aumentamos el padding en los bordes */
 }
 
-/* La fila debe ocupar toda la altura disponible */
 .row {
   display: flex;
-  height: 100%;
-  margin: 0;
+  flex-wrap: nowrap; /* Evita que los elementos salten de línea */
+  gap: 20px; /* Añade separación entre la barra lateral y el contenido */
 }
 
-/* Barra lateral */
 .sidebar {
-  height: 100%;
-  background: #222;
+  background: none; /* Eliminamos el fondo negro */
+  padding: 0; /* Quitamos el padding del contenedor */
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.buscador {
+  background: #333; /* Fondo blanco para que se diferencien */
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Mantiene el efecto de elevación */
+  margin-bottom: 15px; /* Espaciado entre los bloques */
   color: white;
-  padding: 20px;
+}
+
+.opciones {
+  background: #333;
+  color: white;
+  padding: 15px;
   border-radius: 10px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  overflow-y: auto;
+  height: 75vh; /* Restamos 40px para evitar que toque los bordes */
+  overflow-y: auto; /* Permite desplazamiento si hay mucho contenido */
 }
 
-/* Contenido principal */
+
 .content {
-  height: 100%;
   background: white;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  flex-grow: 1;
+  height: 92vh;
 }

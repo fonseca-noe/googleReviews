@@ -60,32 +60,36 @@ async function obtenerReseñas(placeId) {
 
         const detailsData = await detailsResponse.json();
         console.log(detailsData);
-        if (!detailsData.reviews || detailsData.reviews.length === 0) {
-            reviewContainer.innerHTML = "<p class='text-warning text-center'>No hay reseñas disponibles.</p>";
-            return;
-        }
-        
-        document.getElementById("business-title").textContent = detailsData.displayName.text;
-        document.getElementById("rating").textContent = detailsData.rating.toFixed(1);
-        document.getElementById("star-container").innerHTML = obtenerEstrellas(detailsData.rating);
-
-
         const reviewContainer = document.getElementById("review-container");
         const carousel = document.getElementById("review-carousel");
         const prevButton = document.querySelector(".carousel-control-prev");
         const nextButton = document.querySelector(".carousel-control-next");
 
+        reviewContainer.innerHTML = "";
         carousel.style.display = "none";
         prevButton.style.display = "none";
         nextButton.style.display = "none";
         opcionesNegocios.style.display = "none";
 
-        let reviewsHtml = '<div class="carousel-item active"><div class="d-flex justify-content-center">';
+        if (!detailsData.reviews || detailsData.reviews.length === 0) {
+            reviewContainer.innerHTML = "<p class='text-warning text-center'>No hay reseñas disponibles.</p>";
+            return;
+        }
+
+        document.getElementById("business-title").textContent = detailsData.displayName.text;
+        document.getElementById("rating").textContent = detailsData.rating.toFixed(1);
+        document.getElementById("star-container").innerHTML = obtenerEstrellas(detailsData.rating);
+
+        let reviewsHtml = "";
         detailsData.reviews.forEach((review, index) => {
             const avatar = review.authorAttribution.photoUri || "img/default-avatar.png";
             const estrellas = obtenerEstrellas(review.rating);
             const fecha = review.relativePublishTimeDescription;
             const fotoReseña = review.originalPhotoUri ? `<img src="${review.originalPhotoUri}" class="img-fluid mt-2 rounded" alt="Foto de la reseña">` : "";
+
+            if (index % 3 === 0) {
+                reviewsHtml += `<div class="carousel-item${index === 0 ? " active" : ""}"><div class="d-flex justify-content-center">`;
+            }
 
             reviewsHtml += `
                 <div class="review-card mx-2">
@@ -97,17 +101,15 @@ async function obtenerReseñas(placeId) {
                         </div>
                     </div>
                     <div class="stars mb-2">${estrellas}</div>
-                    <p class="mb-0">${review.text ? review.text.text : "Sin comentario."}</p>
+                    <div class="review-text">${review.text ? review.text.text : "Sin comentario."}</div>
                     ${fotoReseña}
                 </div>`;
 
-            // Cada 3 reseñas, cierra la diapositiva y abre una nueva
-            if ((index + 1) % 3 === 0 && index + 1 !== detailsData.reviews.length) {
-                reviewsHtml += '</div></div><div class="carousel-item"><div class="d-flex justify-content-center">';
+            if ((index + 1) % 3 === 0 || index + 1 === detailsData.reviews.length) {
+                reviewsHtml += "</div></div>";
             }
         });
 
-        reviewsHtml += '</div></div>'; 
         reviewContainer.innerHTML = reviewsHtml;
         carousel.style.display = "block";
         if (detailsData.reviews.length > 3) {
@@ -119,6 +121,7 @@ async function obtenerReseñas(placeId) {
         console.error(error);
     }
 }
+
 function obtenerEstrellas(rating) {
     let estrellas = "";
     let fullStars = Math.floor(rating); // Estrellas completas
@@ -129,7 +132,7 @@ function obtenerEstrellas(rating) {
     for (let i = 0; i < fullStars; i++) {
         estrellas += '<i class="fas fa-star text-warning"></i>';
     }
-    
+
     // Agregar media estrella si aplica
     if (halfStar) {
         estrellas += '<i class="fas fa-star-half-alt text-warning"></i>';

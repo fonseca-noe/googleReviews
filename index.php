@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,26 +11,31 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
-            <!-- Barra lateral -->
-            <div class="col-md-3 h-100">
-                <div class="sidebar h-100">
-                    <h4 class="fw-bold text-center">Búsqueda</h4>
-                    <div class="mb-3">
-                        <input type="text" id="nombre" class="form-control" placeholder="Nombre del negocio">
-                        <button id="buscar" class="btn btn-primary w-100 mt-2">Buscar</button>
+            <!-- Bloque 1: Barra lateral -->
+            <div class="col-md-3">
+                <div class="sidebar">
+                    <!-- Búsqueda -->
+                    <div class="buscador">
+                        <h4 class="fw-bold text-center">Búsqueda</h4>
+                        <input type="text" id="nombre" class="form-control mb-2" placeholder="Nombre del negocio">
+                        <button id="buscar" class="btn btn-primary w-100">Buscar</button>
                     </div>
-                    <div id="opciones-negocios"></div>
+
+                    <!-- Opciones de negocios -->
+                    <div class="opciones">
+                        <div id="opciones-negocios"></div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Contenido principal -->
-            <div class="col-md-9 h-100">
-                <div class="content h-100">
-                    <div class="d-flex flex-column align-items-center text-center">
+            <!-- Bloque 2: Contenido principal -->
+            <div class="col-md-9">
+                <div class="content">
+                    <div class="text-center">
                         <h2 class="fw-bold" id="business-title">Google</h2>
-                        <div class="d-flex align-items-center">
+                        <div class="d-flex justify-content-center align-items-center">
                             <span class="text-primary fs-4 fw-bold" id="rating">4.1
                                 <i class="fas fa-star text-warning"></i>
                             </span>
@@ -59,4 +65,5 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/script.js"></script>
 </body>
+
 </html>
