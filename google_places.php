@@ -3,8 +3,8 @@ header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type");
-//TU_API_KEY
-// API Key de Google Places
+
+// API Key de Google Places TU_API_KEY
 define("API_KEY", "TU_API_KEY");
 
 $data = json_decode(file_get_contents("php://input"), true);
@@ -42,20 +42,31 @@ function buscarNegocio($nombreNegocio) {
 
     if ($response === FALSE) {
         echo json_encode(["error" => "No se pudieron obtener los datos."]);
-    } else {
-        echo $response;
+        return;
     }
+
+    echo $response;
 }
 
-//  Obtener reseñas de un negocio por su Place ID
+// Obtener reseñas de un negocio por su Place ID
 function obtenerReseñas($placeId) {
-    $url = "https://places.googleapis.com/v1/places/$placeId?key=" . API_KEY . "&fields=displayName,rating,reviews&languageCode=es";
+    $apiKey = API_KEY;
+    $url = "https://places.googleapis.com/v1/places/$placeId?key=$apiKey&fields=displayName,formattedAddress,photos,nationalPhoneNumber,websiteUri,internationalPhoneNumber,rating,reviews&languageCode=es";
+    
     $response = file_get_contents($url);
 
     if ($response === FALSE) {
         echo json_encode(["error" => "No se pudieron obtener los datos del negocio."]);
-    } else {
-        echo $response;
+        return;
     }
+    $data = json_decode($response, true);
+    // Procesar fotos para generar URLs
+    if (!empty($data['photos'])) {
+        foreach ($data['photos'] as $index => $photo) {
+            $photoName = $photo['name'];
+            $data['photos'][$index]['url'] = "https://places.googleapis.com/v1/{$photoName}/media?key=$apiKey&maxWidthPx=800";
+        }
+    }
+    echo json_encode($data);
 }
 ?>

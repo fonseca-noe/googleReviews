@@ -69,17 +69,40 @@ async function obtenerReseñas(placeId) {
         carousel.style.display = "none";
         prevButton.style.display = "none";
         nextButton.style.display = "none";
-        opcionesNegocios.style.display = "none";
 
         if (!detailsData.reviews || detailsData.reviews.length === 0) {
             reviewContainer.innerHTML = "<p class='text-warning text-center'>No hay reseñas disponibles.</p>";
             return;
         }
-
         document.getElementById("business-title").textContent = detailsData.displayName.text;
         document.getElementById("rating").textContent = detailsData.rating.toFixed(1);
         document.getElementById("star-container").innerHTML = obtenerEstrellas(detailsData.rating);
 
+        const direccion = detailsData.formattedAddress || "Dirección no disponible";
+        const telefono = detailsData.nationalPhoneNumber || detailsData.internationalPhoneNumber || "No disponible";
+        const website = detailsData.websiteUri ? `<a href="${detailsData.websiteUri}" target="_blank">${detailsData.websiteUri}</a>` : "No disponible";
+        const fotoNegocio = detailsData.photos && detailsData.photos.length > 0
+            ? `<img src="${detailsData.photos[0].url}" class="img-fluid rounded shadow-sm mt-2" alt="Foto del negocio">`
+            : "";
+
+        opcionesNegocios.innerHTML = `
+            <div class="negocio-seleccionado p-3">
+                <h5 class="text-center fw-bold">${detailsData.displayName.text}</h5>
+                <p class="text-center"><i class="fas fa-map-marker-alt text-danger"></i> ${direccion}</p>
+                <div class="d-flex justify-content-center align-items-center">
+                    <span class="stars">${obtenerEstrellas(detailsData.rating)}</span>
+                    <span class="ms-2 fw-bold">${detailsData.rating.toFixed(1)}</span>
+                </div>
+                <br>
+                <div class="text-center mb-3">
+                    ${fotoNegocio ? `<img src="${detailsData.photos[0].url}" class="img-fluid rounded shadow-sm" style="max-height: 250px; object-fit: cover;" alt="Foto del negocio">` : ""}
+                </div>
+                <div class="mt-3">
+                    <p><i class="fas fa-phone text-primary"></i> <strong>Teléfono:</strong> ${telefono}</p>
+                    <p><i class="fas fa-globe text-success"></i> <strong>Web:</strong> ${website}</p>
+                </div>
+            </div>
+        `;
         let reviewsHtml = "";
         detailsData.reviews.forEach((review, index) => {
             const avatar = review.authorAttribution.photoUri || "img/default-avatar.png";

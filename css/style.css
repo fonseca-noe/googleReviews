@@ -133,3 +133,7 @@ html, body {
   flex-grow: 1;
   height: 92vh;
 }
+
+.opciones.p{
+  color: white;
+}
